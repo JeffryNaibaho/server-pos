@@ -16,7 +16,7 @@ Berikut adalah status pengembangan fitur dalam proyek ini:
 ### 1. Persiapan & Konfigurasi
 - [x] Instalasi Laravel Framework
 - [x] Konfigurasi Database (MySQL)
-- [ ] Setup Database Migrations (Tabel Schema)
+- [x] Setup Database Migrations (Tabel Schema)
 
 ### 2. Autentikasi (Auth)
 - [ ] Login API untuk Kasir & Admin
