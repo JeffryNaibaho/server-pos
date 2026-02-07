@@ -19,7 +19,7 @@ Berikut adalah status pengembangan fitur dalam proyek ini:
 - [x] Setup Database Migrations (Tabel Schema)
 
 ### 2. Autentikasi (Auth)
-- [ ] Login API untuk Kasir & Admin
+- [x] Login API untuk Kasir & Admin
 - [ ] Logout API
 - [ ] Proteksi Route menggunakan Sanctum Middleware
 
