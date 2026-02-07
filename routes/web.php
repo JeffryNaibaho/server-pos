@@ -8,7 +8,7 @@ Route::get('/', function () {
 });
 
 Route::get('/run-migration', function () {
-    // Jalankan migrate:refresh --seed dengan force (karena di production)
-    Artisan::call('migrate:refresh --seed --force');
-    return '✅ Database berhasil di-reset dan diisi data dummy!';
+    Artisan::call('migrate:fresh --seed --force');
+    
+    return '✅ Database berhasil di-FRESH (Wipe Clean) dan diisi data dummy!';
 });
