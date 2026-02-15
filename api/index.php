@@ -2,35 +2,33 @@
 
 /*
 |--------------------------------------------------------------------------
-| VERCEL BYPASS: FORCE STORAGE SETUP
+| VERCEL BYPASS: FORCE JSON & STORAGE
 |--------------------------------------------------------------------------
-| Kode ini akan memaksa pembuatan folder di /tmp (memori sementara)
-| agar Laravel tidak error saat mencoba menulis file.
 */
 
-$storage = '/tmp/storage';
-$paths = [
-    $storage . '/framework/views',
-    $storage . '/framework/cache',
-    $storage . '/framework/sessions',
-    $storage . '/logs',
-    $storage . '/app',
-];
+// 1. PAKSA LARAVEL JADI JSON (PENTING!)
+// Ini menipu Laravel agar mengira browser minta JSON.
+// Akibatnya: Laravel GAK AKAN pakai View Engine saat error.
+$_SERVER['HTTP_ACCEPT'] = 'application/json';
 
-// 1. Buat folder-folder tersebut jika belum ada
-foreach ($paths as $path) {
-    if (!is_dir($path)) {
-        mkdir($path, 0777, true);
-    }
+// 2. Setup Folder Sementara (/tmp)
+$storage = '/tmp/storage';
+
+if (!is_dir($storage)) {
+    mkdir($storage, 0777, true);
+    mkdir($storage . '/framework', 0777, true);
+    mkdir($storage . '/framework/views', 0777, true);
+    mkdir($storage . '/framework/cache', 0777, true);
+    mkdir($storage . '/framework/sessions', 0777, true);
+    mkdir($storage . '/logs', 0777, true);
 }
 
-// 2. PAKSA konfigurasi Environment Variable (Menimpa .env)
-// Ini memastikan Laravel membaca path yang benar-benar baru kita buat
+// 3. Inject Environment Variables
 putenv('APP_STORAGE=' . $storage);
 putenv('VIEW_COMPILED_PATH=' . $storage . '/framework/views');
-putenv('SESSION_DRIVER=array'); // Kita pakai array dulu biar aman (disimpan di RAM)
-putenv('CACHE_STORE=array');    // Cache juga di RAM
-putenv('LOG_CHANNEL=stderr');   // Log langsung ke Vercel
+putenv('SESSION_DRIVER=array'); 
+putenv('CACHE_STORE=array');
+putenv('LOG_CHANNEL=stderr');
 
 /*
 |--------------------------------------------------------------------------
