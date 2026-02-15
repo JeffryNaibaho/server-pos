@@ -4,7 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
-// Buat Aplikasi
+// 1. Setup Aplikasi
 $app = Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -19,21 +19,30 @@ $app = Application::configure(basePath: dirname(__DIR__))
         //
     })->create();
 
-// --- VERCEL FIX (Versi Aman) ---
-// Kita gunakan try-catch agar kalau error tidak bikin mati total
+// 2. VERCEL STORAGE FIX
+// Ini logika paling aman: Jika folder default tidak bisa ditulis, pindah ke /tmp
 try {
-    if (isset($_ENV['VERCEL'])) {
-        $path = '/tmp/storage';
-        $app->useStoragePath($path);
+    $defaultPath = $app->storagePath();
+    if (!is_writable($defaultPath)) {
+        // Pindah ke /tmp/storage
+        $app->useStoragePath('/tmp/storage');
         
-        // Pastikan folder ada
-        if (!is_dir($path . '/framework/views')) {
-            mkdir($path . '/framework/views', 0777, true);
+        // Buat folder penting di /tmp jika belum ada
+        $dirs = [
+            '/tmp/storage/framework/views',
+            '/tmp/storage/framework/cache',
+            '/tmp/storage/framework/sessions',
+            '/tmp/storage/logs'
+        ];
+        
+        foreach ($dirs as $dir) {
+            if (!is_dir($dir)) {
+                mkdir($dir, 0777, true);
+            }
         }
     }
 } catch (\Throwable $e) {
-    // Diamkan saja kalau error, biar gak 500 fatal
+    // Diamkan error permission agar tidak crash 500
 }
-// ------------------------------
 
 return $app;
