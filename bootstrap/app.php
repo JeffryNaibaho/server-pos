@@ -4,7 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
-// 1. Inisialisasi Aplikasi
+// Buat Aplikasi
 $app = Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -19,42 +19,21 @@ $app = Application::configure(basePath: dirname(__DIR__))
         //
     })->create();
 
-/*
-|--------------------------------------------------------------------------
-| VERCEL STORAGE FIX (LARAVEL 11)
-|--------------------------------------------------------------------------
-| Kode ini memaksa Laravel menggunakan folder /tmp untuk semua penyimpanan.
-| Ini WAJIB untuk Vercel karena folder lain bersifat Read-Only.
-*/
-
-// Kita deteksi: Jika ada env VERCEL atau foldernya read-only, pindah ke /tmp
-$isRunningOnVercel = isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL_ENV']);
-
-if ($isRunningOnVercel) {
-    $storagePath = '/tmp/storage';
-    
-    // Daftar folder yang WAJIB dibuat
-    $folders = [
-        $storagePath,
-        $storagePath . '/app',
-        $storagePath . '/framework',
-        $storagePath . '/framework/views',   // <-- INI YANG BIKIN ERROR MAKE('VIEW')
-        $storagePath . '/framework/cache',
-        $storagePath . '/framework/sessions',
-        $storagePath . '/logs',
-    ];
-
-    // Buat foldernya jika belum ada
-    foreach ($folders as $folder) {
-        if (!is_dir($folder)) {
-            mkdir($folder, 0777, true);
+// --- VERCEL FIX (Versi Aman) ---
+// Kita gunakan try-catch agar kalau error tidak bikin mati total
+try {
+    if (isset($_ENV['VERCEL'])) {
+        $path = '/tmp/storage';
+        $app->useStoragePath($path);
+        
+        // Pastikan folder ada
+        if (!is_dir($path . '/framework/views')) {
+            mkdir($path . '/framework/views', 0777, true);
         }
     }
-
-    // Perintahkan Laravel pindah rumah ke sini
-    $app->useStoragePath($storagePath);
+} catch (\Throwable $e) {
+    // Diamkan saja kalau error, biar gak 500 fatal
 }
-// --------------------------------------------------------------------------
+// ------------------------------
 
-// Kembalikan aplikasi yang sudah diperbaiki
 return $app;
