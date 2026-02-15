@@ -1,38 +1,18 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| VERCEL BYPASS: FORCE JSON & STORAGE
-|--------------------------------------------------------------------------
-*/
-
-// 1. PAKSA LARAVEL JADI JSON (PENTING!)
-// Ini menipu Laravel agar mengira browser minta JSON.
-// Akibatnya: Laravel GAK AKAN pakai View Engine saat error.
-$_SERVER['HTTP_ACCEPT'] = 'application/json';
-
-// 2. Setup Folder Sementara (/tmp)
+// 1. Buat struktur folder di /tmp (Memori Sementara Vercel)
 $storage = '/tmp/storage';
-
 if (!is_dir($storage)) {
     mkdir($storage, 0777, true);
-    mkdir($storage . '/framework', 0777, true);
     mkdir($storage . '/framework/views', 0777, true);
     mkdir($storage . '/framework/cache', 0777, true);
     mkdir($storage . '/framework/sessions', 0777, true);
     mkdir($storage . '/logs', 0777, true);
 }
 
-// 3. Inject Environment Variables
-putenv('APP_STORAGE=' . $storage);
-putenv('VIEW_COMPILED_PATH=' . $storage . '/framework/views');
-putenv('SESSION_DRIVER=array'); 
-putenv('CACHE_STORE=array');
-putenv('LOG_CHANNEL=stderr');
+// 2. Beri tanda bahwa kita sedang di Vercel
+$_ENV['APP_RUNNING_IN_CONSOLE'] = false;
+$_ENV['VERCEL'] = true;
 
-/*
-|--------------------------------------------------------------------------
-| Run The Application
-|--------------------------------------------------------------------------
-*/
+// 3. Masuk ke Laravel
 require __DIR__ . '/../public/index.php';
