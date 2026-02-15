@@ -4,7 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
-// 1. Setup Aplikasi
+// 1. Buat Aplikasi
 $app = Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -19,30 +19,34 @@ $app = Application::configure(basePath: dirname(__DIR__))
         //
     })->create();
 
-// 2. VERCEL STORAGE FIX
-// Ini logika paling aman: Jika folder default tidak bisa ditulis, pindah ke /tmp
-try {
-    $defaultPath = $app->storagePath();
-    if (!is_writable($defaultPath)) {
-        // Pindah ke /tmp/storage
-        $app->useStoragePath('/tmp/storage');
-        
-        // Buat folder penting di /tmp jika belum ada
-        $dirs = [
-            '/tmp/storage/framework/views',
-            '/tmp/storage/framework/cache',
-            '/tmp/storage/framework/sessions',
-            '/tmp/storage/logs'
-        ];
-        
-        foreach ($dirs as $dir) {
-            if (!is_dir($dir)) {
-                mkdir($dir, 0777, true);
-            }
-        }
+/*
+|--------------------------------------------------------------------------
+| VERCEL STORAGE FIX (LARAVEL 11)
+|--------------------------------------------------------------------------
+*/
+// Deteksi Vercel lewat environment variable
+if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL'])) {
+    
+    // Tentukan folder baru di memori sementara
+    $path = '/tmp/storage';
+
+    // PENTING: Paksa aplikasi menggunakan path ini
+    $app->useStoragePath($path);
+
+    // Buat struktur folder secara manual (Laravel tidak akan buatkan otomatis di sini)
+    if (!is_dir($path . '/framework/views')) {
+        mkdir($path . '/framework/views', 0777, true);
     }
-} catch (\Throwable $e) {
-    // Diamkan error permission agar tidak crash 500
+    if (!is_dir($path . '/framework/cache')) {
+        mkdir($path . '/framework/cache', 0777, true);
+    }
+    if (!is_dir($path . '/framework/sessions')) {
+        mkdir($path . '/framework/sessions', 0777, true);
+    }
+    if (!is_dir($path . '/logs')) {
+        mkdir($path . '/logs', 0777, true);
+    }
 }
+// --------------------------------------------------------------------------
 
 return $app;
