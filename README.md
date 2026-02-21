@@ -20,18 +20,18 @@ Berikut adalah status pengembangan fitur dalam proyek ini:
 
 ### 2. Autentikasi (Auth)
 - [x] Login API untuk Kasir & Admin
-- [ ] Logout API
-- [ ] Proteksi Route menggunakan Sanctum Middleware
+- [x] Logout API
+- [x] Proteksi Route menggunakan Sanctum Middleware
 
 ### 3. Manajemen Produk (Inventory)
-- [ ] CRUD Kategori Barang
-- [ ] CRUD Data Barang (Product)
-- [ ] Fitur Update Stok Barang
+- [x] CRUD Kategori Barang
+- [x] CRUD Data Barang (Product)
+- [x] Fitur Update Stok Barang
 
 ### 4. Transaksi (Point of Sales)
-- [ ] Membuat Transaksi Baru (Simpan ke Database)
-- [ ] Logika Pengurangan Stok Otomatis saat Transaksi
-- [ ] Detail Transaksi (Pivot Table)
+- [x] Membuat Transaksi Baru (Simpan ke Database)
+- [x] Logika Pengurangan Stok Otomatis saat Transaksi
+- [x] Detail Transaksi (Pivot Table)
 
 ## Cara Menjalankan (Local Development)
 
