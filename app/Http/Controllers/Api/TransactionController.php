@@ -7,7 +7,7 @@ use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB; // Penting untuk Database Transaction
+// use Illuminate\Support\Facades\DB; // Kita matikan dulu sementara
 
 class TransactionController extends Controller
 {
@@ -16,17 +16,17 @@ class TransactionController extends Controller
         // 1. Validasi data yang dikirim React
         $request->validate([
             'total_price' => 'required|integer',
-            'items'       => 'required|array', // Daftar barang belanjaan
+            'items'       => 'required|array',
         ]);
 
-        // Gunakan DB::transaction agar jika ada error di tengah jalan, semua batal (Safety)
         try {
-            return DB::transaction(function () use ($request) {
+            // --- KITA MATIKAN DB::transaction SEMENTARA ---
+            // return DB::transaction(function () use ($request) {
                 
                 // A. Buat Header Transaksi
                 $transaction = Transaction::create([
-                    'user_id' => 1, // Kita hardcode ID Admin dulu (karena belum ada fitur login di React)
-                    'invoice_code' => 'INV-' . time(), // Contoh: INV-1706430000
+                    'user_id' => 1, 
+                    'invoice_code' => 'INV-' . time(), 
                     'total_price' => $request->total_price,
                 ]);
 
@@ -40,9 +40,11 @@ class TransactionController extends Controller
                         'price_at_transaction' => $item['price'],
                     ]);
 
-                    // C. KURANGI STOK (Fitur Utama)
+                    // C. KURANGI STOK
                     $product = Product::find($item['id']);
-                    $product->decrement('stock', $item['qty']);
+                    if ($product) {
+                        $product->decrement('stock', $item['qty']);
+                    }
                 }
 
                 // D. Kembalikan respons sukses
@@ -51,13 +53,14 @@ class TransactionController extends Controller
                     'message' => 'Transaksi Berhasil!',
                     'data'    => $transaction
                 ]);
-            });
+            // }); 
+            // --- BATAS MATIKAN TRANSACTION ---
 
         } catch (\Exception $e) {
-            // Jika error, kembalikan pesan error
+            // Kita akan langsung melihat ERROR ASLINYA di sini
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal menyimpan transaksi: ' . $e->getMessage()
+                'message' => 'ERROR ASLI DITEMUKAN: ' . $e->getMessage()
             ], 500);
         }
     }
