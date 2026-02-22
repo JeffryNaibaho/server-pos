@@ -1,41 +1,55 @@
-# Point of Sales (POS) System - Backend API
+# 🛒 Fullstack POS (Point of Sale) System
 
-Repository ini adalah bagian **Backend Server** untuk aplikasi Point of Sales (Kasir). Aplikasi ini dibangun untuk membantu manajemen stok barang, transaksi kasir, dan pelaporan penjualan sederhana.
+Sebuah aplikasi kasir modern berbasis web yang memisahkan arsitektur Frontend dan Backend secara rapi (*Decoupled Architecture*). Aplikasi ini dirancang untuk menangani transaksi secara *real-time*, mengelola stok produk otomatis, dan siap diakses dari berbagai perangkat (Responsive).
 
-Backend ini menyediakan RESTful API yang nantinya akan dikonsumsi oleh Frontend (React.js).
+🚀 **Live Demo:** [https://client-pos-eta.vercel.app/]
 
-## Teknologi yang Digunakan
-- **Framework:** Laravel 11 (PHP)
-- **Database:** MySQL
-- **Authentication:** Laravel Sanctum (Planned)
-- **Architecture:** MVC (Model-View-Controller)
+---
 
-## Fitur & Roadmap Pengembangan
-Berikut adalah status pengembangan fitur dalam proyek ini:
+## 🛠️ Tech Stack & Arsitektur
 
-### 1. Persiapan & Konfigurasi
-- [x] Instalasi Laravel Framework
-- [x] Konfigurasi Database (MySQL)
-- [x] Setup Database Migrations (Tabel Schema)
+Aplikasi ini dibangun menggunakan teknologi standar industri modern:
 
-### 2. Autentikasi (Auth)
-- [x] Login API untuk Kasir & Admin
-- [x] Logout API
-- [x] Proteksi Route menggunakan Sanctum Middleware
+* **Frontend:** React.js (dengan Vite) + TypeScript + Bootstrap
+* **Backend / API:** Laravel 11 (PHP)
+* **Database:** PostgreSQL (Neon DB Serverless)
+* **Deployment:** Vercel (Frontend & Backend Serverless)
 
-### 3. Manajemen Produk (Inventory)
-- [x] CRUD Kategori Barang
-- [x] CRUD Data Barang (Product)
-- [x] Fitur Update Stok Barang
+---
 
-### 4. Transaksi (Point of Sales)
-- [x] Membuat Transaksi Baru (Simpan ke Database)
-- [x] Logika Pengurangan Stok Otomatis saat Transaksi
-- [x] Detail Transaksi (Pivot Table)
+## ✨ Fitur Utama
 
-## Cara Menjalankan (Local Development)
+- [x] **Katalog Produk Dinamis:** Menampilkan daftar produk beserta gambar dan detail harga dari REST API.
+- [x] **Manajemen Keranjang (Cart):** Validasi stok otomatis saat memasukkan barang ke keranjang.
+- [x] **Sistem Checkout Aman:** Mengirim *payload* transaksi ke Backend menggunakan *Database Transaction* yang solid (ACID compliant).
+- [x] **Auto-Update Stok:** Stok barang langsung berkurang secara *real-time* di *database* pasca transaksi.
+- [x] **CORS & Serverless Ready:** Backend sudah dikonfigurasi untuk menangani *cross-origin requests* dan berjalan di lingkungan *Read-Only Serverless* (Vercel).
 
-1. **Clone Repository**
-   ```bash
-   git clone [https://github.com/JeffryNaibaho/server-pos.git](https://github.com/JeffryNaibaho/server-pos.git)
-   cd server-pos
+---
+
+## 📸 Screenshot
+
+![Desktop](https://github.com/user-attachments/assets/a520c724-99c6-4616-9b11-a858c34c658c)
+![Mobile](https://github.com/user-attachments/assets/0bf284a2-c28d-4a21-856d-3ba27237aa0a)
+
+---
+
+## ⚙️ Cara Menjalankan di Localhost
+
+Jika Anda ingin menjalankan project ini di komputer lokal:
+
+**1. Clone Repository & Install Dependencies:**
+\`\`\`bash
+npm install
+\`\`\`
+
+**2. Setup Environment:**
+Buat file `.env` dan masukkan link API:
+\`\`\`env
+VITE_API_BASE_URL=https://server-pos-blue.vercel.app/api
+\`\`\`
+
+**3. Jalankan Aplikasi:**
+\`\`\`bash
+npm run dev
+\`\`\`
